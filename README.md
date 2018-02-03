@@ -21,7 +21,7 @@ When network is undergoing problems such as congestion, scan attack, DDoS attack
 - cuda
 
 ## How to make
-- `cd ./src; make`, then you can find executable file in CPU, GPU and MultiCore directories (there are documents to tell you how to execute).
+- `cd ./src; make;` then you can find executable file in CPU, GPU and MultiCore directories (there are documents to tell you how to execute).
 - FPGA, OVS and P4 need specific platforms, you can try them on real device or virtual machine.
 
 
