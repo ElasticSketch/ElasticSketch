@@ -11,3 +11,8 @@ Then, each thread has a 150 KBytes Elastic sketch, the heavy part of which is 37
 You can change the parameters `THREAD_NUM` in `setup.h` to change the number of thread you want.
 It's recommended that the number of threads is less than the logical core number in your CPU.
 
+# How to make
+- `make`
+
+# How to test
+- `./elastic_multicore.out`

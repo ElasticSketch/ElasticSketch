@@ -8,5 +8,6 @@ For each measurement task, besides Elastic sketch, we have implemented many othe
 - entropy: UnivMon, Sieving.
 - cardinality: Linear counting, UnivMon.
 
-## How to test
+## How to make and test
 First `make` in `demo`, and then you can test the above algorithms.
+
