@@ -5,7 +5,7 @@ FILES = elastic.out cmheap.out cmsketch.out cusketch.out countheap.out countsket
 		linearcounting.out mrac.out hashpipe.out sieving.out spacesaving.out univmon.out \
 		css.out flowradar.out reversiblesketch.out
 
-all: $(FILES)
+all: $(FILES) 
 
 elastic.out: elastic.cpp
 	$(GCC) $(CFLAGS) $(SSEFLAGS) -o elastic.out elastic.cpp

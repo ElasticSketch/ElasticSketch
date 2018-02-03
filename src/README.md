@@ -1,3 +1,4 @@
 # Source Codes
 Codes implemented on six different platforms.
-You can `make` here, and test in each folder.
+- `./auto_make`: make executable files.
+- `./clean`: clean .o and executable files.
