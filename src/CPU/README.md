@@ -9,5 +9,5 @@ For each measurement task, besides Elastic sketch, we have implemented many othe
 - `cardinality`: Linear counting, UnivMon.
 
 ## How to make and test
-First `make` in `demo`, and then you can test the above algorithms.
+First `make` in `demo`, and then you can test the above algorithms in `demo`.
 
