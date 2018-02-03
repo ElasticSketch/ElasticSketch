@@ -9,9 +9,10 @@ When network is undergoing problems such as congestion, scan attack, DDoS attack
 - `src` directory contains source codes
   - `CPU`: Elastic sketch and other algorithms implemented on CPU
   - `FPGA`: Elastic sketch implemented on FPGA
-  - `GPU`: Elastic sketch implemented on GPU
+  - `GPU`: Elastic sketch implemented on GPU4
   - `MultiCore`: Elastic sketch using multi-core
   - `OVS`: Elastic sketch implemented on OVS
+  - `P4`: Elastic sketch implemented on P4
 - more details can be found in `src/`
 
 ## Requirements
