@@ -4,8 +4,8 @@
 #include <unordered_map>
 #include <algorithm>
 #include <sstream>
-#include "BOBHash32.h"
-#include "cuckoo_hashing.h"
+#include "../common/BOBHash32.h"
+#include "../common/cuckoo_hashing.h"
 
 using std::min;
 using std::swap;

@@ -5,7 +5,7 @@
 #include <cstring>
 #include <algorithm>
 #include <string>
-#include "BOBHash32.h"
+#include "../common/BOBHash32.h"
 
 using namespace std;
 
