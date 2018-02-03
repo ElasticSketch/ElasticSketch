@@ -1,7 +1,7 @@
 GCC = g++
 CFLAGS = -O2 -std=c++14
 SSEFLAGS = -msse2 -mssse3 -msse4.1 -msse4.2 -mavx -march=native
-FILES = elastic.out cmheap.out cmsketch.out cusketch.out countheap.out
+FILES = elastic.out cmheap.out cmsketch.out cusketch.out countheap.out countsketch.out
 
 all: $(FILES)
 
@@ -19,6 +19,9 @@ cmsketch.out: cmsketch.cpp
 
 cusketch.out: cusketch.cpp
 	$(GCC) $(CFLAGS) -o cusketch.out cusketch.cpp
+
+countsketch.out: countsketch.cpp
+	$(GCC) $(CFLAGS) -o countsketch.out countsketch.cpp
 
 clean:
 	rm $(all) -f *~ *.o *.out

@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "BOBHash32.h"
+#include "../common/BOBHash32.h"
 
 using namespace std;
 
@@ -22,7 +22,6 @@ private:
 	BOBHash32* hash[d] = {NULL};
 	BOBHash32* sign_hash[d] = {NULL};
 public:
-	string name = "Count Sketch";
 
 	CountSketch(){}
 	CountSketch(int memory_in_bytes)
@@ -45,9 +44,6 @@ public:
 			memset(counters[i], 0, sizeof(int) * w);
 		}
 		
-		stringstream name_buf;
-        name_buf << "C@" << memory_in_bytes;
-        name = name_buf.str();
 	}
 	void clear()
 	{

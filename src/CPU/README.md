@@ -13,4 +13,7 @@ First `make` in `demo`, and then you can test the above algorithms in `demo`.
 - `./elastic.out`: it shows you the ARE of flow size estimation, the estimated heavy hitters, flow size distribution, entropy and cardinality. If you want to do heavy change detection, you can build two Elastic sketch and find heavy changers among the two groups of heavy hitters.
 - `./cmheap.out`: it shows you the estimated heavy hitters.
 - `./cmsketch.out`: it shows you the ARE of the flow size estimation.
+- `./countheap.out`: it shows you the estimated heavy hitters.
+- `./countsketch.out`: it shows you the ARE of the flow size estimation.
+- `./cusketch.out`: it shows you the ARE of the flow size estimation.
 
