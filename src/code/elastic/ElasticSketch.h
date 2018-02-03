@@ -73,6 +73,19 @@ public:
         return heavy_result;
     }
 
+    void get_heavy_hitters(int threshold, vector<pair<string, int>> & results)
+    {
+        for (int i = 0; i < bucket_num; ++i) 
+            for (int j = 0; j < MAX_VALID_COUNTER; ++j) 
+            {
+                uint32_t key = heavy_part.buckets[i].key[j];
+                int val = query((uint8_t *)&key);
+                if (val >= threshold) {
+                    results.push_back(make_pair(string((const char*)&key, 4), val));
+                }
+            }
+    }
+
 /* interface */
     int get_compress_width(int ratio) { return light_part.get_compress_width(ratio);}
     void compress(int ratio, uint8_t *dst) {    light_part.compress(ratio, dst); }
