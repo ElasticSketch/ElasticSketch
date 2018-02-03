@@ -6,7 +6,7 @@ When network is undergoing problems such as congestion, scan attack, DDoS attack
 ## Directory
 - `elastic_sketch_technical_report` can help you understand the paper better.
 - `data`: traces for test, each 13 bytes in a trace is a (SrcIP:SrcPort, DstIP:DstPort, protocol)
-- `src` directory contains source codes
+- `src` contains codes impelemented on different platforms:
   - `CPU`: Elastic sketch and other algorithms implemented on CPU
   - `FPGA`: Elastic sketch implemented on FPGA
   - `GPU`: Elastic sketch implemented on GPU4
