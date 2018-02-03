@@ -11,7 +11,7 @@ When network is undergoing problems such as congestion, scan attack, DDoS attack
   - `FPGA`: Elastic sketch implemented on FPGA
   - `MultiCore`: Elastic sketch using multi-core
   - `OVS`: Elastic sketch implemented on OVS
-- more details can be found in above directories
+- more details can be found in directories
 
 ## Requirements
 - SIMD instructions are used in Elastic sketch to achieve higher speed, so the CPU must support SSE2 instruction set.
