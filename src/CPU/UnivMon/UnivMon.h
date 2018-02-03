@@ -2,27 +2,24 @@
 #define STREAMMEASUREMENTSYSTEM_UNIVMON_H
 
 #include <iostream>
-#include <sstream>
 #include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
-#include "CountHeap.h"
+#include "../CountHeap/CountHeap.h"
 #include <ctime>
 #include <cmath>
+#include <sstream>
 
+template<uint8_t key_len, uint64_t mem_in_bytes, uint8_t level = 14>
 class UnivMon
 {
 public:
-    uint8_t key_len; 
-	uint64_t mem_in_bytes; 
-	uint8_t level = 14;
-	uint16_t k = 1000;
-    typedef univ_mon::CountHeap L2HitterDetector;
-    L2HitterDetector ** sketches = new L2HitterDetector* [level];
-    BOBHash32 ** polar_hash = new BOBHash32* [level];
+    static constexpr uint16_t k = 1000;
+    typedef CountHeap<key_len, k, 5> L2HitterDetector;
+    L2HitterDetector * sketches[level];
+    BOBHash32 * polar_hash[level];
     int element_num = 0;
-    
 
     double g_sum(double (*g)(double))
     {
@@ -53,8 +50,7 @@ public:
 //public:
     string name;
 
-    UnivMon(uint8_t key_len_, uint64_t mem_in_bytes_, uint16_t k_ = 1000, uint8_t level_ = 14): 
-		key_len(key_len_), mem_in_bytes(mem_in_bytes_), level(level_), k(k_)
+    UnivMon()
     {
         stringstream name_buffer;
         name_buffer << "UnivMon@" << mem_in_bytes;
@@ -65,9 +61,10 @@ public:
 //            int mem = int(mem_in_bytes * (1 << (level - 1 - i)) / total);
             int mem_for_sk = int(mem_in_bytes) - level * (key_len + 4) * k;
             int mem = int(mem_for_sk / level);
-            sketches[i] = new L2HitterDetector(key_len, k, 5, mem);
+            sketches[i] = new L2HitterDetector(mem);
             auto idx = uint32_t(rand() % MAX_PRIME32);
-            polar_hash[i] = new BOBHash32(i); // no random
+//            cout << idx << endl;
+            polar_hash[i] = new BOBHash32(idx);
         }
     }
 
@@ -98,7 +95,7 @@ public:
         return std::log2(element_num) - sum / element_num;
     }
 
-    void get_heavy_hitters(uint32_t threshold, std::vector<pair<string, uint32_t> >& ret)
+    void get_heavy_hitters(uint32_t threshold, std::vector<pair<uint32_t, int> >& ret)
     {
         unordered_map<std::string, uint32_t> results;
         vector<std::pair<std::string, int>> vec_top_k(k);
@@ -115,7 +112,7 @@ public:
         for (auto & kv: results) {
             if (kv.second >= threshold) {
 //                results.erase(kv.first);
-                ret.emplace_back(kv);
+                ret.emplace_back(make_pair(*(uint32_t *)(kv.first.c_str()), kv.second));
             }
         }
 //        std::copy(results.begin(), results.end(), ret.begin());
@@ -130,8 +127,6 @@ public:
             delete sketches[i];
             delete polar_hash[i];
         }
-        delete sketches;
-        delete polar_hash;
     }
 };
 

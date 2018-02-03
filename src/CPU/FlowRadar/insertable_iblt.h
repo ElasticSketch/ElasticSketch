@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <iterator>
 //#include "SPA.h"
-#include "BOBHash32.h"
+#include "../common/BOBHash32.h"
 
 using namespace std;
 

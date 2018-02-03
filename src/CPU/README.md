@@ -16,4 +16,9 @@ First `make` in `demo`, and then you can test the above algorithms in `demo`.
 - `./countheap.out`: it shows you the estimated heavy hitters.
 - `./countsketch.out`: it shows you the ARE of the flow size estimation.
 - `./cusketch.out`: it shows you the ARE of the flow size estimation.
-
+- `./hashpipe.out`: it shows you the estimated heavy hitters.
+- `./linearcounting.out`: it shows you the cardinality.
+- `./mrac.out`: it shows you the flow size distribution.
+- `./sieving.out`: it shows you the entropy.
+- `./spacesaving.out`: it shows you the estimated heavy hitters.
+- `./univmon.out`: it shows you the entropy, cardinality and the estimated heavy hitters.

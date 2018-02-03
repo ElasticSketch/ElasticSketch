@@ -2,7 +2,7 @@
 #define STREAMCLASSIFIER_SPACESAVINGUTILS_H
 
 #include <cstdint>
-#include "hash_functions.h"
+#include "../common/hash_functions.h"
 
 template<uint32_t key_len>
 struct Node

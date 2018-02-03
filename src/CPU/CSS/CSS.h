@@ -16,7 +16,7 @@
 #include <vector>
 #include <stdint.h>
 #include <map>
-#include "BOBHash32.h"
+#include "../common/BOBHash32.h"
 using namespace std;
 
 

@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "BOBHash32.h"
+#include "../common/BOBHash32.h"
 
 template <int key_len, int tot_memory_in_bytes> class LinearCounting {
         static constexpr int map_num = tot_memory_in_bytes;

@@ -1,8 +1,8 @@
 #ifndef STREAMMEASUREMENTSYSTEM_MRAC_H
 #define STREAMMEASUREMENTSYSTEM_MRAC_H
 
-#include "BOBHash32.h"
-#include "EMFSD.h"
+#include "../common/BOBHash32.h"
+#include "../common/EMFSD.h"
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
