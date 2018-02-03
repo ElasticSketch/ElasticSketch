@@ -9,4 +9,4 @@ For each measurement task, besides Elastic sketch, we have implemented many othe
 - cardinality: Linear counting, UnivMon.
 
 ## How to test
-First compile in `demo`, and then you can test the above algorithms.
+First `make` in `demo`, and then you can test the above algorithms.
