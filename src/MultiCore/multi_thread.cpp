@@ -13,18 +13,18 @@
 #include <random>
 #include <unistd.h>
 
-#include "../BasicCode/BOBHash32.h"
-#include "../Basiccode/Layer_sketch_4.h"
+#include "../CPU/elastic/ElasticSketch.h"
 #include "setup.h"
 
 using namespace std;
 
 
-#define BUFFER_MAX_PACKET_NUM 10000		
+#define BUFFER_MAX_PACKET_NUM 100000		
 uint8_t* packet_buffer[THREAD_NUM][BUFFER_MAX_PACKET_NUM];
-volatile int cur_packet_num_pull[THREAD_NUM];		
-volatile int cur_packet_num_push[THREAD_NUM];		
+volatile int cur_packet_num_pull[THREAD_NUM];	
+volatile int cur_packet_num_push[THREAD_NUM];	
 volatile int insert_finish[THREAD_NUM];
+int begin_insert[THREAD_NUM];
 
 #define MAIN_THREAD_BUFFER_SIZE 1000
 uint8_t* main_buffer[THREAD_NUM][BUFFER_MAX_PACKET_NUM]; 
@@ -46,15 +46,15 @@ void* ElasticRecord(void* args)
 #endif
 
 /* init a elastic sketch */
-	LayerSketch_4<LS_BUCKET_NUM_4, TOTAL_MEM_IN_BYTES> *ls_4;
-	ls_4 = new LayerSketch_4<LS_BUCKET_NUM_4, TOTAL_MEM_IN_BYTES>();
+	ElasticSketch<LS_BUCKET_NUM_4, TOTAL_MEM_IN_BYTES> *es;
+	es = new ElasticSketch<LS_BUCKET_NUM_4, TOTAL_MEM_IN_BYTES>();
+	begin_insert[buffer_no] = 1;
 	printf("%d-th thread (tid:%llu) is ready for insertion\n", buffer_no, (long long unsigned int)pthread_self());
-
 
 	timespec time1, time2;
 	long long resns, tot_resns = 0;
 
-
+/* check the mutex */
 	int insertion_cnt = 0;
 	uint8_t key[13];
 	while(1)
@@ -62,15 +62,19 @@ void* ElasticRecord(void* args)
 		int val_pull = cur_packet_num_pull[buffer_no];
 		int val_push = cur_packet_num_push[buffer_no];
 		if(val_push != val_pull){	
-			buffer_index = val_pull % BUFFER_MAX_PACKET_NUM;
-			cur_packet_num_pull[buffer_no] += 1;
-			ls_4->insert(packet_buffer[buffer_no][buffer_index]);
-			insertion_cnt++;
+			while(val_push != val_pull)
+			{
+				buffer_index = val_pull % BUFFER_MAX_PACKET_NUM;
+				es->insert(packet_buffer[buffer_no][buffer_index]);
+				val_pull++;
+			}
+			insertion_cnt += val_push - cur_packet_num_pull[buffer_no];
+			cur_packet_num_pull[buffer_no] = val_pull;
 		}
-		else{
+		else{	
 			if(insert_finish[buffer_no])
 			{
-				delete ls_4;
+				delete es;
 				printf("%d-th thread (tid:%llu) finish %d insertions\n", buffer_no, (long long unsigned int)pthread_self(), insertion_cnt);
 				return NULL;
 			}
@@ -79,13 +83,9 @@ void* ElasticRecord(void* args)
 }
 
 
-
-
-
-
 int main(int argc, char *argv[])
 {
-	ReadInTraces(src_dir);
+	ReadInTraces("../../data/");
 #ifdef _BIND_THREAD_WITH_CPU_
 	cpu_set_t mask;
 	CPU_ZERO(&mask);
@@ -101,6 +101,15 @@ int main(int argc, char *argv[])
 		long long resns, tot_resns = 0;
 		int packet_cnt = (int)traces[datafileCnt - 1].size();
 
+
+			uint8_t **keys = new uint8_t*[packet_cnt];
+			for(int i = 0; i < packet_cnt; ++i)
+			{
+				keys[i] = new uint8_t[13];
+				memcpy(keys[i], traces[datafileCnt - 1][i].key, 13);
+			}
+
+
 		printf("***************************************************************\n");
 		for(int tt = 0; tt < test_cycles; ++tt)
 		{
@@ -110,6 +119,7 @@ int main(int argc, char *argv[])
 			memset(packet_buffer, 0, sizeof(packet_buffer));
 			memset(main_buffer, 0, sizeof(main_buffer));
 			memset(main_buffer_cnt, 0, sizeof(main_buffer_cnt));
+			memset(begin_insert, 0, sizeof(begin_insert));
 			for(int i = 0; i < THREAD_NUM; ++i)
 			{
 				cur_packet_num_pull[i] = 0;
@@ -129,20 +139,25 @@ int main(int argc, char *argv[])
 					printf("%d-th thread create error: error_code=%d\n", i, ret);
 			}
 
-			uint8_t **keys = new uint8_t*[packet_cnt];
-			for(int i = 0; i < packet_cnt; ++i)
-			{
-				keys[i] = new uint8_t[13];
-				memcpy(keys[i], traces[datafileCnt - 1][i].key, 13);
+
+		/* check if all thread are ready */
+			usleep(1000000);		// wait 2 seconds
+			while(1){
+				int tmpRes = 0;
+				for(int i = 0; i < THREAD_NUM; ++i)
+					tmpRes += begin_insert[i];
+				if(tmpRes == THREAD_NUM)
+					break;
 			}
 
+
 		/* open a file, and read in */
-			usleep(1000000);		// wait 2 seconds
 			printf("Begin insertion.\n");
+			fflush(stdout);
 			clock_gettime(CLOCK_MONOTONIC, &time1);
 			for(int i = 0; i < packet_cnt; ++i)
 			{
-				int thread_no = (((*(uint32_t*)keys[i]) * 2654435761u) >> 15) % THREAD_NUM;
+				int thread_no = (*(uint32_t*)keys[i]) % THREAD_NUM;
 				main_buffer[thread_no][main_buffer_cnt[thread_no]++] = keys[i];
 
 				if(main_buffer_cnt[thread_no] == MAIN_THREAD_BUFFER_SIZE)
@@ -159,8 +174,8 @@ int main(int argc, char *argv[])
 							}else{
 								int latter_len = BUFFER_MAX_PACKET_NUM - prev_index;
 								int former_len = MAIN_THREAD_BUFFER_SIZE - latter_len;
-								memcpy(&packet_buffer[thread_no][prev_index], main_buffer[thread_no], latter_len);
-								memcpy(&packet_buffer[thread_no][0], &main_buffer[thread_no][latter_len], former_len);
+								memcpy(&packet_buffer[thread_no][prev_index], main_buffer[thread_no], latter_len * sizeof(uint8_t*));
+								memcpy(&packet_buffer[thread_no][0], &main_buffer[thread_no][latter_len], former_len * sizeof(uint8_t*));
 							}
 
 							cur_packet_num_push[thread_no] += MAIN_THREAD_BUFFER_SIZE;
@@ -184,9 +199,8 @@ int main(int argc, char *argv[])
 			tot_resns += resns;
 		}
 		double th_ls_4 = (double)1000.0 * test_cycles * packet_cnt / tot_resns;
-		printf("CAIDA_%d: LS_4 inserting throughtput: %.6lf Mips\n", datafileCnt - 1, th_ls_4);
+		printf("CAIDA_%d: Elastic sketch inserting throughtput: %.6lf Mips\n", datafileCnt - 1, th_ls_4);
+
 	}
-
-
 	return 0;
 }
