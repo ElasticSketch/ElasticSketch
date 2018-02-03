@@ -4,4 +4,4 @@ The results of experiments show that the throughput of Elastic sketch on GPU can
 
 ## How to test
 `./test.sh`.
-It changes the batch size and get insert throughput.
+It changes the batch size and gets insert throughput.
