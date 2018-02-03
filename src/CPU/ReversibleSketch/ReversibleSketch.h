@@ -1,4 +1,4 @@
-#ifndef STREAMMEASUREMENTSYSTEM_REVERSIBLESKETCH_H
+#ifndef STREAMMEASUREMENTSYSTEM_REVERSIBLESKETCH_H 
 #define STREAMMEASUREMENTSYSTEM_REVERSIBLESKETCH_H
 
 #include <sstream>
@@ -8,10 +8,10 @@
 #include <cmath>
 #include <cstring>
 #include <random>
-#include "k-ary.h"
+#include "../common/k-ary.h"
 #include <set>
 
-#include "os_mangler.h"
+#include "../common/os_mangler.h"
 #define H 6
 
 using namespace std;
@@ -51,10 +51,8 @@ public:
 
             while(true){
                 if (0 == B[3]) {
-                    // cout << "没有逆元" << endl;
                     return gcd(m, b);
                 } else if (1 == B[3]) {
-                    // cout << "逆元：" << B[2] << endl;;
                     return B[2];
                 }
 

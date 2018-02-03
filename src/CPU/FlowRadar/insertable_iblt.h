@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cstring>
 #include <string>
-#include <vector>
+#include <vector> 
 #include <unordered_map>
 #include <iterator>
 //#include "SPA.h"
@@ -123,15 +123,15 @@ public:
     
     ~InsertableIBLT()
     {
-    	cout << "delete" << endl;
+    	//cout << "delete" << endl;
 		delete bf;
-    	cout << "delete bf" << endl;
+    	//cout << "delete bf" << endl;
     	delete iblt;
-    	cout << "delete iblt" << endl;
+    	//cout << "delete iblt" << endl;
     	for (unsigned i = 0; i < 7; i++) {
             delete bobhash[i] ;
         }
-        cout << "delete bobhash" << endl;
+        //cout << "delete bobhash" << endl;
         return;
 	}
 };

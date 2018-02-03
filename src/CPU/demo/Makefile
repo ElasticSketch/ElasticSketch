@@ -2,7 +2,8 @@ GCC = g++
 CFLAGS = -O2 -std=c++14
 SSEFLAGS = -msse2 -mssse3 -msse4.1 -msse4.2 -mavx -march=native
 FILES = elastic.out cmheap.out cmsketch.out cusketch.out countheap.out countsketch.out \
-		linearcounting.out mrac.out hashpipe.out sieving.out spacesaving.out univmon.out
+		linearcounting.out mrac.out hashpipe.out sieving.out spacesaving.out univmon.out \
+		css.out flowradar.out reversiblesketch.out
 
 all: $(FILES)
 
@@ -41,6 +42,25 @@ spacesaving.out:
 
 univmon.out:
 	$(GCC) $(CFLAGS) -o univmon.out univmon.cpp
+
+css.out:
+	$(GCC) $(CFLAGS) -o css.out css.cpp
+
+flowradar.out:
+	$(GCC) $(CFLAGS) -o flowradar.out flowradar.cpp	
+
+reversiblesketch.out: common.o os_galoisField.o os_mangler.o
+	$(GCC) $(CFLAGS) -o reversiblesketch.out reversiblesketch.cpp common.o os_galoisField.o os_mangler.o
+
+common.o:
+	$(GCC) $(CFLAGS) -c ../common/common.cc
+
+os_galoisField.o:
+	$(GCC) $(CFLAGS) -c ../common/os_galoisField.cc
+
+os_mangler.o:
+	$(GCC) $(CFLAGS) -c ../common/os_mangler.cc
+
 
 clean:
 	rm $(all) -f *~ *.o *.out
